@@ -1,4 +1,4 @@
-import UserRepository from "../repository/userRepository";
+import UserRepository from "../repository/userRepository.js";
 import * as httpStatus from "../../../config/constants/httpStatus.js"
 import UserException from "../exceptions/UserException.js";
 
