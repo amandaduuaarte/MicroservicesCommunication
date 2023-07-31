@@ -14,6 +14,11 @@ const  createInitialData = async () => {
             email: 'firstUser@gmail.com',
             password: password
         });
+        await User.create({
+            name: 'user test',
+            email: 'userTest@gmail.com',
+            password: password
+        });
     } catch {
         console.error('Error creating initial user');
     } 
