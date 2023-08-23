@@ -2,8 +2,11 @@ import Order from "../../modules/sales/model/Order.js";
 
 
 export async function createInitialData() {
-    await Order.collection.drop();
-    let firstOrder = await Order.create({
+    const existind = await Order.find();
+    if (existind.length > 0) {
+        await Order.collection.drop();
+    }
+     await Order.create({
         products: [
             {
                 productId: 1001,

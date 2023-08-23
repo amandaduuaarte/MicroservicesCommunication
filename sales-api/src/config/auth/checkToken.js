@@ -1,8 +1,8 @@
 import JWT from 'jsonwebtoken';
 import { promisify } from "util";
 
-import AuthException from "../../modules/user/exceptions/authException.js"
-import {API_SECRET } from "../secrets/secrets.js";
+import AuthException from "./authException.js";
+import {API_SECRET } from "../constants/secrets.js";
 import {UNAUTHORIZE, BAD_REQUEST} from "../constants/httpStatus.js";
 
 
