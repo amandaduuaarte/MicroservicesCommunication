@@ -5,6 +5,7 @@ import checkToken from './src/config/auth/checkToken.js';
 
 import { connectRabbitMq } from './src/config/rabbitmq/rabbitConfig.js';
 import { sendMessageToProductStockUpdateQueue } from './src/modules/product/rabbitmq/productStockUpdateSender.js'
+import OrderRouter from "./src/modules/sales/router/OrderRoutes.js";
 
 const app = express();
 const env = process.env;
@@ -14,7 +15,8 @@ connectMongoDb();
 createInitialData();
 connectRabbitMq();
 
-// app.use(checkToken);
+app.use(checkToken);
+app.use(OrderRouter);
 app.get('/teste', (req, res) => {
     try {
         sendMessageToProductStockUpdateQueue([

@@ -3,7 +3,7 @@ import { sendMessageToProductStockUpdateQueue } from "../../product/rabbitmq/pro
 import { INTERNAL_SERVER_ERROR, SUCCESS, BAD_REQUEST } from "../../../config/constants/httpStatus.js";
 import { PENDING } from "../status/orderStatus.js";
 import OrderException from "../exception/OrderException.js";
-
+import ProductClient from "../../product/client/ProductClient.js";
 
 class OrderService {
     async createOrder() {
@@ -13,7 +13,7 @@ class OrderService {
             const { authUser } = req;
             const { authorization } = req.headers;
             let order = this.createInitialOrderData(orderData, authUser);
-           await  this.validateProductStock(order);
+           await  this.validateProductStock(order, authorization);
             let createdOrder = await OrderRepository.save(order);
             this.sendMessage(order);
 
@@ -45,6 +45,7 @@ class OrderService {
             if (order.salesId && order.status) {
                 if (order.status && order.status !== existingOrder.status) { 
                     existingOrder.status = order.status;
+                    existingOrder.updatedAt = new Date();
                    await OrderRepository.save(existingOrder);
                 }
             } else {
@@ -61,8 +62,8 @@ class OrderService {
         }
      }
     
-    async validateProductStock(order) {
-        let stockIsOut = true;
+    async validateProductStock(order, token) {
+        let stockIsOut = await ProductClient(order, token);
         if (stockIsOut) {
             throw new OrderException(BAD_REQUEST, 'The stock is not available for this product.');
         }

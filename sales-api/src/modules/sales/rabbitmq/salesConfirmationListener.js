@@ -10,7 +10,7 @@ export function listenToSalesConfirmationQueue() {
         if (error) {
             throw error;
         }
-        console.info('Listening to sales confirmation queue.');
+        console.info('Listening sales confirmation queue.');
         connection.createChannel((error, channel) => {
             if (error) {
                 throw error;
