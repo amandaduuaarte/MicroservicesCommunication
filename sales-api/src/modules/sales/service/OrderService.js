@@ -6,7 +6,7 @@ import OrderException from "../exception/OrderException.js";
 import ProductClient from "../../product/client/ProductClient.js";
 
 class OrderService {
-    async createOrder() {
+    async createOrder(req) {
         try {
             let orderData = req.body;
             this.validateOrderData(orderData);
@@ -15,7 +15,7 @@ class OrderService {
             let order = this.createInitialOrderData(orderData, authUser);
            await  this.validateProductStock(order, authorization);
             let createdOrder = await OrderRepository.save(order);
-            this.sendMessage(order);
+            this.sendMessage(createdOrder);
 
             return {
                 status: SUCCESS,
@@ -35,18 +35,18 @@ class OrderService {
                 user: authUser,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                products: orderData
+                products: orderData.products
         }
     }
-    async  updateOrder(orderMessage) {
+    async updateOrder(orderMessage) {
         try {
             const order = JSON.parse(orderMessage);
-            let existingOrder = OrderRepository.findById(order.salesId);
             if (order.salesId && order.status) {
-                if (order.status && order.status !== existingOrder.status) { 
-                    existingOrder.status = order.status;
-                    existingOrder.updatedAt = new Date();
-                   await OrderRepository.save(existingOrder);
+                let existingOrder = await OrderRepository.findById(order.salesId);
+                if (existingOrder && order.status !== existingOrder.status) {
+                  existingOrder.status = order.status;
+                  existingOrder.updatedAt = new Date();
+                  await OrderRepository.save(existingOrder);
                 }
             } else {
                 console.log("The order message was not complete.");
@@ -63,10 +63,16 @@ class OrderService {
      }
     
     async validateProductStock(order, token) {
-        let stockIsOut = await ProductClient(order, token);
-        if (stockIsOut) {
-            throw new OrderException(BAD_REQUEST, 'The stock is not available for this product.');
-        }
+        let stockIsOk = await ProductClient.checkProductStock(
+            order,
+            token,
+          );
+            if (!stockIsOk) {
+            throw new OrderException(
+                BAD_REQUEST,
+                "The stock is out for the products."
+            );
+            }
     }
 
     sendMessage(order) {
@@ -75,6 +81,33 @@ class OrderService {
             products: order.products
         }
         sendMessageToProductStockUpdateQueue(message);
+    }
+
+    async findById(req) { 
+        try {
+            const { id } = req.params;
+            this.validateInformedId(id);
+            const existingOrder = await OrderRepository.findById(id);
+
+            if (!existingOrder) {
+                throw new OrderException(BAD_REQUEST, 'Order not found.');
+            }
+            return {
+                status: SUCCESS,
+                existingOrder
+            };
+        } catch (error) {
+            return {
+                status: error.status ? error.status : INTERNAL_SERVER_ERROR,
+                message: error.message
+            };
+        }
+    }
+
+    validateInformedId(id) {
+        if (!id) {
+            throw new OrderException(BAD_REQUEST, 'Id must be provided.');
+        }
     }
 }
 

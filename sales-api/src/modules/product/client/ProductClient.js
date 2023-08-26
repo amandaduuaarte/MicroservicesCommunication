@@ -6,18 +6,24 @@ class ProductClient {
     async checkProductStock(products, token) {
         try {
             const headers = {
-                Authorization: `Bearer ${token}`
+                Authorization: token
             };
             console.info(`Seding request to PRODUCT API with data: ${JSON.stringify(products)}`);
 
-            axios.post(`${PRODUCT_API_URL}/check-stock`, { headers }, products)
+            let response = true;
+            await axios
+                .post(`${PRODUCT_API_URL}/check-stock`,
+                {products: products.products},
+                { headers }
+               )
                 .then(response => {
-                    return true;
+                    response = true;
                 })
                 .catch(err => {
                     console.error(err.response.message);
-                    return false;
+                    response = false;
                 });
+            return response;
         } catch (error) {
             return false;
         }

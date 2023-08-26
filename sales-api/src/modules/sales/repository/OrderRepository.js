@@ -6,7 +6,7 @@ class OrderRepository {
             return await Order.create(order);
         } catch (error) {
             console.error(error);
-            return 
+            return null;
         }
     } 
 
@@ -15,7 +15,7 @@ class OrderRepository {
             return await Order.findById(id);
         } catch (error) {
             console.error(error);
-            return 
+            return null;
         }
     } 
     async findAll() {
@@ -23,7 +23,7 @@ class OrderRepository {
             return await Order.find();
         } catch (error) {
             console.error(error);
-            return 
+            return null;
         }
     } 
 }
