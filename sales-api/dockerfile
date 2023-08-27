@@ -1,0 +1,7 @@
+FROM node:16.20
+WORKDIR .
+COPY package*.json ./
+RUN yarn
+COPY . .
+EXPOSE 3031
+CMD ["node", "app.js"]
