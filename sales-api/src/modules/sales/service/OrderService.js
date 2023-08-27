@@ -104,6 +104,48 @@ class OrderService {
         }
     }
 
+    async findAll() { 
+        try {
+            const orders = await OrderRepository.findAll();
+
+            if (!orders) {
+                throw new OrderException(BAD_REQUEST, 'No Orders were found.');
+            }
+            return {
+                status: SUCCESS,
+                orders
+            };
+        } catch (error) {
+            return {
+                status: error.status ? error.status : INTERNAL_SERVER_ERROR,
+                message: error.message
+            };
+        }
+    }
+
+    async findByProductId(req) { 
+        try {
+            const { productId } = req.params;
+            this.validateInformedId(productId);
+            const existingOrder = await OrderRepository.findByProductId(productId);
+
+            if (!existingOrder) {
+                throw new OrderException(BAD_REQUEST, 'Order not found.');
+            }
+            return {
+                status: SUCCESS,
+                salesIds: existingOrder.map(order => {
+                    return order.id
+                }),
+            };
+        } catch (error) {
+            return {
+                status: error.status ? error.status : INTERNAL_SERVER_ERROR,
+                message: error.message
+            };
+        }
+    }
+
     validateInformedId(id) {
         if (!id) {
             throw new OrderException(BAD_REQUEST, 'Id must be provided.');
