@@ -24,6 +24,14 @@ const OrderSchema = new Schema({
         type: Date,
         require: true,
     },
+    transactionId: {
+        type: String,
+        require: true,
+    },
+    serviceId: {
+        type: String,
+        require: true,
+    }
 });
 
 export default model("Order", OrderSchema);
