@@ -1,8 +1,8 @@
-# Projeto: Comunicação entre Microsserviços
+# Project: Communication between Microservices
 
-Repositório contendo o projeto desenvolvido para estudo sobre Comunicação entre Microsserviços.
+Repository containing the project developed to study Communication between Microservices.
 
-## Tecnologias
+## Technologies
 
 * **Java 11**
 * **Spring Boot 2**
@@ -22,15 +22,15 @@ Repositório contendo o projeto desenvolvido para estudo sobre Comunicação ent
 ![Arquitetura Proposta](https://github.com/amandaduuaarte/MicroservicesCommunication/assets/89158507/bb4b2dbc-a4fd-4381-8c63-dcfccf016181)
 
 
-## Logs e Tracing da API
+## API Logs and Tracing
 
-Todos os endpoints necessitam um header chamado **transactionid**, pois representará o ID que irá percorrer toda a requisição no serviço, e, caso essa aplicação chame outros microsserviços, esse **transactionid** será repassado. Todos os endpoints de entrada e saída irão logar os dados de entrada (JSON ou parâmetros) e o **transactionid**. 
+All endpoints need a header called **transactionid**, as it will represent the ID that will go through the entire request in the service, and, if this application calls other microservices, this **transactionid** will be passed on. All input and output endpoints will log the input data (JSON or parameters) and the **transactionid**.
 
-A cada requisição pra cada microsserviço, teremos um atributo **serviceid** gerado apenas para os logs desse serviço em si. Teremos então o **transactionid** que irá circular entre todos os microsserviços envolvidos na requisição, e cada microsserviço terá seu próprio **serviceid**.
+With each request for each microservice, we will have a **serviceid** attribute generated just for the logs of that service itself. We will then have the **transactionid** that will circulate among all the microservices involved in the request, and each microservice will have its own **serviceid**.
 
-Fluxo de tracing nas requisições:
+Tracing flow in requests:
 
-**POST** - **/api/order** com **transactionid**: ef8347eb-2207-4610-86c0-657b4e5851a3
+**POST** - **/api/order** with **transactionid**: ef8347eb-2207-4610-86c0-657b4e5851a3
 
 ```
 service-1:
@@ -47,16 +47,15 @@ serviceid    : 6116a0f4-6c9f-491f-b180-ea31bea2d9de
                                       transactionid: ef8347eb-2207-4610-86c0-657b4e5851a3
                                       serviceid    : b4fbc082-a49a-440d-b1d6-2bd0557fd189
 ```
+As we can see in the flow above, the **transactionid** ef8347eb-2207-4610-86c0-657b4e5851a3 remained the same in the 3 services, and each service has
+your own **serviceid**.
 
-Como podemos ver no fluxo acima, o **transactionid** ef8347eb-2207-4610-86c0-657b4e5851a3 manteve-se o mesmo nos 3 serviços, e cada serviço possui
-seu próprio **serviceid**.
-
-Exemplo de um fluxo completo chamando 5 serviços e gerando **transactionid** e **serviceid**:
+Example of a complete flow calling 5 services and generating **transactionid** and **serviceid**:
 
 ![Tracing](https://github.com/amandaduuaarte/MicroservicesCommunication/assets/89158507/998fdb2e-91e1-47b0-bf13-7d86818a1c53)
 
 
-Exemplo de logs nas APIs desenvolvidas:
+Example of logs in the developed APIs:
 
 Auth-API:
 
@@ -95,10 +94,10 @@ Recieving message from queue: {"salesId":"6165b92addaf7fc9dd85dad0","status":"AP
 ```
 
 
-## Comandos Docker
+## Docker commands
 
-Abaixo serão listados alguns dos comandos executados durante o desenvolvimento para criação dos containers 
-dos bancos de dados PostgreSQL, MongoDB e do message broker RabbitMQ:
+Below are some of the commands executed during development to create containers.
+from PostgreSQL, MongoDB and RabbitMQ message broker databases:
 
 #### Container Auth-DB
 
@@ -112,7 +111,7 @@ dos bancos de dados PostgreSQL, MongoDB e do message broker RabbitMQ:
 
 `docker run --name sales-db -p 27017:27017 -p 28017:28017 -e MONGODB_USER="admin" -e MONGODB_DATABASE="sales" -e MONGODB_PASS="123456" -v  c:/db tutum/mongodb`
 
-#### Conexão no Mongoshell
+#### Connection in Mongoshell
 
 `mongo "mongodb://admin:123456@localhost:27017/sales"`
 
@@ -120,14 +119,26 @@ dos bancos de dados PostgreSQL, MongoDB e do message broker RabbitMQ:
 
 `docker run --name sales_rabbit -p 5672:5672 -p 25676:25676 -p 15672:15672 rabbitmq:3-management`
 
-### Execução docker-compose
+### Run docker-compose
 
 `docker-compose up --build`
 
-Para ignorar os logs, adicione a flag `-d`.
+To ignore the logs, add the `-d` flag.
 
+## Contributing
+To contribute to the project, please feel free to contact me. You can reach me through the following channels:
 
+-   GitHub: <a href="https://github.com/amandaduuaarte">Amanda Duarte</a>
 
-## Autor
+I would be happy to discuss any ideas, suggestions, or contributions you have in mind. Thank you for your interest in contributing to the project!
+ <div align="center">
+  <br/>
+  <br/>
+  <br/>
+    <div>
+      <sub>Copyright © 2023 - <a href="https://github.com/amandaduuaarte">Amanda Duarte</sub></a>
+    </div>
+    <br/>
+    💖
+</div>
 
-### Amanda Duarte 
