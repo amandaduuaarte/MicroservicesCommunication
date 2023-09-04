@@ -97,7 +97,7 @@ Recieving message from queue: {"salesId":"6165b92addaf7fc9dd85dad0","status":"AP
 
 ## Comandos Docker
 
-Abaixo serão listados alguns dos comandos executados durante o curso para criação dos containers 
+Abaixo serão listados alguns dos comandos executados durante o desenvolvimento para criação dos containers 
 dos bancos de dados PostgreSQL, MongoDB e do message broker RabbitMQ:
 
 #### Container Auth-DB
