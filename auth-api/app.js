@@ -8,9 +8,7 @@ import tracing from './src/config/tracing.js';
 const app = express();
 const env = process.env;
 const PORT = env.PORT || 3030;
-
-app.use(tracing);
-createInitialData();
+const CONTAINER_ENV = "container";
 
 app.get('/api/status', (req, res) => {
     return res.status(200).json({
@@ -23,8 +21,23 @@ app.get('/api/status', (req, res) => {
 
 app.use(express.json());
 
-app.use(userRoutes);
+startAplication();
 
+function startAplication() {
+    if (env.NODE_ENV !== CONTAINER_ENV) {
+        createInitialData();
+    }
+}
+
+app.get('/api/initial-data', (req, res) => {
+    createInitialData();
+    return res.status(200).json({
+        message: 'Data was successfully created.'
+    });
+});
+
+app.use(tracing);
+app.use(userRoutes);
 
 app.listen(PORT, () => {
     console.info(`Server listening on ${PORT}`);

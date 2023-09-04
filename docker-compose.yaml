@@ -4,8 +4,6 @@ services:
     image: tutum/mongodb
     container_name: sales-db
     restart: always
-    networks:
-      - sales-network
     environment:
       - MONGODB_DATABASE=sales
       - MONGODB_USER=admin
@@ -18,8 +16,6 @@ services:
     image: postgres:11
     container_name: auth-db
     restart: always
-    networks:
-      - sales-network
     environment:
       - POSTGRES_DB=auth-db
       - POSTGRES_USER=admin
@@ -31,8 +27,6 @@ services:
     image: rabbitmq:3-management
     container_name: sales_rabbit
     hostname: sales_rabbit
-    networks:
-      - sales-network
     ports: 
       - 5672:5672
       - 25676:25676
@@ -45,8 +39,6 @@ services:
     image: postgres:11
     container_name: product-db
     restart: always
-    networks:
-      - sales-network
     environment:
       - POSTGRES_DB=product-db
       - POSTGRES_USER=admin
@@ -60,8 +52,6 @@ services:
     depends_on:
       - product-db
       - sales_rabbit
-    networks:
-      - sales-network
     environment:
       - PORT=8081
       - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
@@ -84,8 +74,6 @@ services:
     container_name: auth-api
     depends_on:
       - auth-db
-    networks:
-      - sales-network
     environment:
       - PORT=3030
       - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
@@ -94,6 +82,7 @@ services:
       - DB_PORT=5432
       - DB_USER=admin
       - DB_PASSWORD=123456
+      - NODE_ENV=container
     ports: 
       - 3030:3030
 
@@ -103,17 +92,12 @@ services:
     depends_on:
       - sales-db
       - sales_rabbit
-    networks:
-      - sales-network
     environment:
       - PORT=3031
       - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
       - MONGO_DB_URL=mongodb://admin:123456@sales-db:27017/sales
       - RABBIT_MQ_URL=amqp://sales_rabbit:5672
       - PRODUCT_API_URL=http://product-api:8081/api/product
+      - NODE_ENV=container
     ports: 
       - 3031:3031
-
-networks:
-  sales-network:
-    drive: bridge

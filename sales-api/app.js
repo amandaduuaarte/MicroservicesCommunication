@@ -12,12 +12,28 @@ import tracing from './src/config/tracing.js';
 const app = express();
 const env = process.env;
 const PORT = env.PORT || 3031;
+const CONTAINER_ENV = "container";
 
 connectMongoDb();
-createInitialData();
 connectRabbitMq();
 
 app.use(express.json());
+
+startAplication();
+
+function startAplication() {
+    if (ENV.NODE_ENV !== CONTAINER_ENV) {
+        createInitialData();
+    }
+}
+
+app.get('/api/initial-data', (req, res) => {
+    createInitialData();
+    return res.status(200).json({
+        message: 'Data was successfully created.'
+    });
+});
+
 app.use(tracing);
 app.use(checkToken);
 app.use(OrderRouter);
@@ -39,6 +55,7 @@ app.get('/teste', (req, res) => {
         return res.status(500).json({ error: true });
     }
 });
+
 app.get('/api/status', (req, res) => {
     return res.status(200).json({
         service: 'sales-api',
