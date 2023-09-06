@@ -5,6 +5,7 @@ import Order from "../../modules/sales/model/Order.js";
 export async function createInitialData() {
     const existind = await Order.find();
     if (existind.length > 0) {
+        console.info('Removing existing orders...')
         await Order.collection.drop();
     }
      await Order.create({

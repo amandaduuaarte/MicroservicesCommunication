@@ -22,7 +22,7 @@ app.use(express.json());
 startAplication();
 
 function startAplication() {
-    if (ENV.NODE_ENV !== CONTAINER_ENV) {
+    if (env.NODE_ENV !== CONTAINER_ENV) {
         createInitialData();
     }
 }
